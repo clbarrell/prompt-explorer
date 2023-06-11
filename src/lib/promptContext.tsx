@@ -1,4 +1,5 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 export type Prompt = {
   prompt: string;
@@ -24,7 +25,8 @@ type Action =
   | { type: "UPDATE_CHAIN"; payload: { prompt: Prompt; chainId: string } }
   | { type: "IMPORT"; payload: { chainList: Chain[] } }
   | { type: "ADD_PROMPT"; payload: { chainId: string; userInput: boolean } }
-  | { type: "CHANGE_ACTIVE"; payload: { chainId: string } };
+  | { type: "CHANGE_ACTIVE"; payload: { chainId: string } }
+  | { type: "LOAD_CHAINS"; payload: { chainList: Chain[] } };
 
 interface ContextProps {
   state: ContextState;
@@ -135,6 +137,11 @@ const reducer = (state: ContextState, action: Action): ContextState => {
               }
         ),
       };
+    case "LOAD_CHAINS":
+      return {
+        ...state,
+        chainList: [...action.payload.chainList],
+      };
     default:
       return state;
   }
@@ -146,7 +153,27 @@ export const ChainContext = createContext<ContextProps>({
 });
 
 export const ChainProvider = ({ children }: { children: JSX.Element }) => {
+  const [promptContextState, setPpromptContextState] = useLocalStorage(
+    "promptContext",
+    initialState
+  );
+
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    if (JSON.stringify(state) === JSON.stringify(initialState)) {
+      dispatch({
+        type: "LOAD_CHAINS",
+        payload: { chainList: promptContextState.chainList },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // save to local storage
+  useEffect(() => {
+    setPpromptContextState(state);
+  }, [setPpromptContextState, state]);
 
   return (
     <ChainContext.Provider value={{ state, dispatch }}>
