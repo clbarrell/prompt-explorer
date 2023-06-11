@@ -2,17 +2,40 @@ import React, { useContext } from "react";
 import {
   Box,
   Button,
+  ButtonGroup,
   Container,
   Flex,
   FormControl,
   FormLabel,
   Heading,
+  HStack,
   Stack,
   Switch,
   Text,
 } from "@chakra-ui/react";
 import { useChainContext } from "@/lib/promptContext";
 import { PromptComponent } from "./prompt";
+import { SelectButtonGroup } from "./SelectButtonGroup";
+
+const ToggleButton = ({
+  label,
+  editMode,
+}: {
+  label: string;
+  editMode: boolean;
+}) => {
+  const { dispatch } = useChainContext();
+  const active =
+    (label === "edit" && editMode) || (label === "run" && !editMode);
+
+  const handleClick = () => {
+    if (!active) {
+      dispatch({ type: "SWITCH_MODE" });
+    }
+  };
+
+  return <Button onClick={handleClick} bg={active ? 'gray.200' : 'inherit'}>{label} mode</Button>;
+};
 
 const MainPanel = () => {
   const { state, dispatch } = useChainContext();
@@ -68,18 +91,13 @@ const MainPanel = () => {
               Export chain
             </Button>
           </Stack>
-          <Box>
-            <FormControl display="inline-flex" alignItems="center">
-              <FormLabel htmlFor="edit-mode" mb="0">
-                Edit mode
-              </FormLabel>
-              <Switch
-                id="edit-mode"
-                isChecked={editMode}
-                onChange={handleEditModeToggle}
-              />
-            </FormControl>
-          </Box>
+          <HStack direction="row">
+            {!state.editMode && <Button colorScheme={"green"} size="sm">Start</Button>}
+            <ButtonGroup isAttached variant="outline" size="sm">
+              <ToggleButton label="edit" editMode={state.editMode} />
+              <ToggleButton label="run" editMode={state.editMode} />
+            </ButtonGroup>
+          </HStack>
         </Flex>
         <Stack
           alignItems="center"
@@ -95,13 +113,9 @@ const MainPanel = () => {
               chainId={activeChain.id}
             />
           ))}
-          {state.editMode ? (
+          {state.editMode && (
             <Button onClick={handleAddPrompt} mt={4}>
               Add new prompt
-            </Button>
-          ) : (
-            <Button onClick={handleAddPrompt} mt={4} colorScheme="green">
-              Run
             </Button>
           )}
         </Stack>

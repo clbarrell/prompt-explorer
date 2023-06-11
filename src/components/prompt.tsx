@@ -59,6 +59,8 @@ export const PromptComponent = ({
           key={`${part.slice(0, 10)}-${i}`}
           value="{{Previous response goes here}}"
           readOnly={true}
+          borderColor="gray.400"
+          color="gray.600"
         />
       );
     } else if (part[0] === "{") {

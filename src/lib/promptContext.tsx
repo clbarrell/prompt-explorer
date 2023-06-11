@@ -35,7 +35,7 @@ interface ContextProps {
 }
 
 const initialState: ContextState = {
-  editMode: false,
+  editMode: true,
   chainList: [
     {
       name: "Chain 1",
