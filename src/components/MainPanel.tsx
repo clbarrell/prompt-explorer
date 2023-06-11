@@ -67,9 +67,6 @@ const MainPanel = () => {
             <Button onClick={handleExport} variant="link">
               Export chain
             </Button>
-            <Button onClick={handleExport} variant="link">
-              Rename
-            </Button>
           </Stack>
           <Box>
             <FormControl display="inline-flex" alignItems="center">

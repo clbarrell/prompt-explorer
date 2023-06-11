@@ -16,7 +16,7 @@ const LeftSideNav = () => {
   };
 
   return (
-    <Box w="20%" minW={"190px"} h="100vh" bg="gray.100" p={4}>
+    <Box w="20%" minW={"190px"} h="100vh" p={4}>
       <Text fontSize="xl" fontWeight="bold" mb={4}>
         Prompt Explorer
       </Text>
@@ -35,7 +35,13 @@ const LeftSideNav = () => {
           </Button>
         ))}
       </Stack>
-      <Button onClick={handleNewChain} w="100%" mt={8} variant="solid" colorScheme={"green"} >
+      <Button
+        onClick={handleNewChain}
+        w="100%"
+        mt={8}
+        variant="solid"
+        colorScheme={"green"}
+      >
         New Chain
       </Button>
     </Box>
