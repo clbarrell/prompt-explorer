@@ -92,6 +92,7 @@ const MainPanel = () => {
               key={prompt.id}
               prompt={prompt}
               onPromptUpdate={handlePromptUpdate}
+              chainId={activeChain.id}
             />
           ))}
           {state.editMode ? (

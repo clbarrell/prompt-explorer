@@ -26,7 +26,8 @@ type Action =
   | { type: "IMPORT"; payload: { chainList: Chain[] } }
   | { type: "ADD_PROMPT"; payload: { chainId: string; userInput: boolean } }
   | { type: "CHANGE_ACTIVE"; payload: { chainId: string } }
-  | { type: "LOAD_CHAINS"; payload: { chainList: Chain[] } };
+  | { type: "LOAD_CHAINS"; payload: { chainList: Chain[] } }
+  | { type: "DELETE_PROMPT"; payload: { chainId: string; promptId: string } };
 
 interface ContextProps {
   state: ContextState;
@@ -141,6 +142,20 @@ const reducer = (state: ContextState, action: Action): ContextState => {
       return {
         ...state,
         chainList: [...action.payload.chainList],
+      };
+    case "DELETE_PROMPT":
+      return {
+        ...state,
+        chainList: state.chainList.map((chain) =>
+          chain.id === action.payload.chainId
+            ? {
+                ...chain,
+                prompts: chain.prompts.filter(
+                  (prompt) => prompt.id !== action.payload.promptId
+                ),
+              }
+            : chain
+        ),
       };
     default:
       return state;
