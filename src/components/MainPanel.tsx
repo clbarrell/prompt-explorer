@@ -16,26 +16,7 @@ import {
 import { useChainContext } from "@/lib/promptContext";
 import { PromptComponent } from "./prompt";
 import { SelectButtonGroup } from "./SelectButtonGroup";
-
-const ToggleButton = ({
-  label,
-  editMode,
-}: {
-  label: string;
-  editMode: boolean;
-}) => {
-  const { dispatch } = useChainContext();
-  const active =
-    (label === "edit" && editMode) || (label === "run" && !editMode);
-
-  const handleClick = () => {
-    if (!active) {
-      dispatch({ type: "SWITCH_MODE" });
-    }
-  };
-
-  return <Button onClick={handleClick} bg={active ? 'gray.200' : 'inherit'}>{label} mode</Button>;
-};
+import { ToggleButton } from "./ToggleButton";
 
 const MainPanel = () => {
   const { state, dispatch } = useChainContext();
@@ -92,7 +73,11 @@ const MainPanel = () => {
             </Button>
           </Stack>
           <HStack direction="row">
-            {!state.editMode && <Button colorScheme={"green"} size="sm">Start</Button>}
+            {!state.editMode && (
+              <Button colorScheme={"green"} size="sm">
+                Start
+              </Button>
+            )}
             <ButtonGroup isAttached variant="outline" size="sm">
               <ToggleButton label="edit" editMode={state.editMode} />
               <ToggleButton label="run" editMode={state.editMode} />
