@@ -1,4 +1,13 @@
-import { Box, Button, Input, Stack, Text, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  Stack,
+  Text,
+  Flex,
+  GridItem,
+  Grid,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { HighlightWithinTextarea } from "react-highlight-within-textarea";
 // https://bonafideduck.github.io/react-highlight-within-textarea/
@@ -24,6 +33,8 @@ export const PromptComponent = ({
     });
   };
 
+  const noVariables = prompt.prompt.match(/({{.*?}})/g) === null;
+
   if (state.editMode) {
     return (
       <Box bg="gray.50" p={4} rounded="md" width={"100%"}>
@@ -43,6 +54,12 @@ export const PromptComponent = ({
             delete
           </Button>
         </Box>
+        {noVariables && (
+          <Text fontSize={"sm"} color="gray.500">
+            Tip: you can use {`{{`}variables{`}}`} in your prompt for input when
+            running. {`{{`}prev_response{`}}`} is response from prior prompt.
+          </Text>
+        )}
       </Box>
     );
   }
@@ -78,14 +95,29 @@ export const PromptComponent = ({
     <Box
       width={"100%"}
       bg="gray.50"
-      p={4}
+      py={6}
+      px={6}
       rounded="md"
       color={emptyPrompt ? "gray.400" : "inherit"}
     >
-      <Stack py={2} px={4} borderWidth={0}>
-        <Text>{emptyPrompt && "Empty prompt"}</Text>
-        {parsedParts}
-      </Stack>
+      <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+        <GridItem colSpan={{ sm: 3, md: 1 }}>
+          <Stack borderWidth={0}>
+            {emptyPrompt && <Text>Empty prompt</Text>}
+            {parsedParts}
+          </Stack>
+        </GridItem>
+        <GridItem
+          colSpan={{ sm: 3, md: 2 }}
+          borderLeftWidth={{ sm: 0, md: 1 }}
+          borderLeftColor={"gray.300"}
+          pl={{ sm: 0, md: 4 }}
+        >
+          <Text fontSize="sm" color="gray.500" letterSpacing={"wide"}>
+            Press start to begin
+          </Text>
+        </GridItem>
+      </Grid>
     </Box>
   );
 };

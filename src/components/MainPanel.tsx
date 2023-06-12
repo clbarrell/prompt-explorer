@@ -4,31 +4,36 @@ import {
   Button,
   ButtonGroup,
   Container,
+  Editable,
+  EditableInput,
+  EditablePreview,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   HStack,
+  Skeleton,
   Stack,
   Switch,
   Text,
+  Tooltip,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useChainContext } from "@/lib/promptContext";
 import { PromptComponent } from "./prompt";
 import { SelectButtonGroup } from "./SelectButtonGroup";
 import { ToggleButton } from "./ToggleButton";
+import { ConfirmDelete } from "./ConfirmDelete";
 
 const MainPanel = () => {
   const { state, dispatch } = useChainContext();
   const { chainList, editMode } = state;
   const activeChain = chainList.find((chain) => chain.active);
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const handleExport = () => {
     // TODO: Implement export functionality
-  };
-
-  const handleEditModeToggle = () => {
-    dispatch({ type: "SWITCH_MODE" });
   };
 
   const handlePromptUpdate = (promptId: string, newPrompt: string) => {
@@ -50,8 +55,23 @@ const MainPanel = () => {
     });
   };
 
+  const handleNameChange = (name: string) => {
+    if (!activeChain) return;
+    dispatch({
+      type: "CHANGE_NAME",
+      payload: { chainId: activeChain?.id, name: name },
+    });
+  };
+
+  const handleDelete = () => {
+    if (!activeChain) return;
+    dispatch({ type: "DELETE_CHAIN", payload: { chainId: activeChain?.id } });
+  };
+
+  if (!activeChain) return <Skeleton height="100vh" width="100%" />;
+
   return (
-    <Container py={4}>
+    <Container maxW={"container.lg"} py={4}>
       <Flex
         flexDirection="column"
         alignItems="center"
@@ -59,7 +79,25 @@ const MainPanel = () => {
         width="100%"
       >
         <Box mt={3} mb={6}>
-          <Heading>{activeChain?.name}</Heading>
+          <Editable
+            value={activeChain?.name}
+            isPreviewFocusable={true}
+            selectAllOnFocus={false}
+            fontSize="2xl"
+            fontWeight={"bold"}
+            onChange={handleNameChange}
+          >
+            <Tooltip label="Click to edit" shouldWrapChildren={true}>
+              <EditablePreview
+                py={2}
+                px={4}
+                _hover={{
+                  background: "gray.100",
+                }}
+              />
+            </Tooltip>
+            <EditableInput textAlign={"center"} />
+          </Editable>
         </Box>
         <Flex
           alignItems="center"
@@ -68,8 +106,11 @@ const MainPanel = () => {
           mb={4}
         >
           <Stack direction="row">
-            <Button onClick={handleExport} variant="link">
-              Export chain
+            <Button onClick={handleExport} variant="link" size="sm">
+              Export
+            </Button>
+            <Button onClick={onOpen} variant="link" size="sm">
+              Delete
             </Button>
           </Stack>
           <HStack direction="row">
@@ -105,6 +146,12 @@ const MainPanel = () => {
           )}
         </Stack>
       </Flex>
+      <ConfirmDelete
+        chainName={activeChain?.name}
+        confirmDeleteCallBack={handleDelete}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </Container>
   );
 };

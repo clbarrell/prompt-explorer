@@ -27,7 +27,9 @@ type Action =
   | { type: "ADD_PROMPT"; payload: { chainId: string; userInput: boolean } }
   | { type: "CHANGE_ACTIVE"; payload: { chainId: string } }
   | { type: "LOAD_CHAINS"; payload: { chainList: Chain[] } }
-  | { type: "DELETE_PROMPT"; payload: { chainId: string; promptId: string } };
+  | { type: "DELETE_PROMPT"; payload: { chainId: string; promptId: string } }
+  | { type: "DELETE_CHAIN"; payload: { chainId: string } }
+  | { type: "CHANGE_NAME"; payload: { chainId: string; name: string } };
 
 interface ContextProps {
   state: ContextState;
@@ -63,7 +65,7 @@ const reducer = (state: ContextState, action: Action): ContextState => {
         active: false,
       }));
       return {
-        ...state,
+        editMode: true,
         chainList: [
           ...oldChainList,
           {
@@ -153,6 +155,25 @@ const reducer = (state: ContextState, action: Action): ContextState => {
                 prompts: chain.prompts.filter(
                   (prompt) => prompt.id !== action.payload.promptId
                 ),
+              }
+            : chain
+        ),
+      };
+    case "DELETE_CHAIN":
+      return {
+        ...state,
+        chainList: state.chainList.filter(
+          (chain) => chain.id !== action.payload.chainId
+        ),
+      };
+    case "CHANGE_NAME":
+      return {
+        ...state,
+        chainList: state.chainList.map((chain) =>
+          chain.id === action.payload.chainId
+            ? {
+                ...chain,
+                name: action.payload.name,
               }
             : chain
         ),
