@@ -5,6 +5,8 @@ export type Prompt = {
   prompt: string;
   id: string;
   userInput: boolean;
+  inputs: { [key: number]: string };
+  response: string;
 };
 
 export type Chain = {
@@ -14,22 +16,59 @@ export type Chain = {
   prompts: Prompt[];
 };
 
-export type ContextState = {
+type ContextState = {
   editMode: boolean;
   chainList: Chain[];
+  running: boolean;
+};
+
+const emptyInputs = {
+  // making empty inputs for the new prompt
+  0: "",
+  1: "",
+  2: "",
+  3: "",
+  4: "",
+  5: "",
+  6: "",
+  7: "",
+  8: "",
 };
 
 type Action =
   | { type: "SWITCH_MODE" }
-  | { type: "NEW_CHAIN"; payload: Prompt }
-  | { type: "UPDATE_CHAIN"; payload: { prompt: Prompt; chainId: string } }
+  | {
+      type: "NEW_CHAIN";
+      payload: { id: string; prompt: string; userInput: boolean };
+    }
+  | {
+      type: "UPDATE_CHAIN";
+      payload: {
+        prompt: { id: string; prompt: string; userInput: boolean };
+        chainId: string;
+      };
+    }
   | { type: "IMPORT"; payload: { chainList: Chain[] } }
   | { type: "ADD_PROMPT"; payload: { chainId: string; userInput: boolean } }
   | { type: "CHANGE_ACTIVE"; payload: { chainId: string } }
   | { type: "LOAD_CHAINS"; payload: { chainList: Chain[] } }
   | { type: "DELETE_PROMPT"; payload: { chainId: string; promptId: string } }
   | { type: "DELETE_CHAIN"; payload: { chainId: string } }
-  | { type: "CHANGE_NAME"; payload: { chainId: string; name: string } };
+  | { type: "CHANGE_NAME"; payload: { chainId: string; name: string } }
+  | { type: "RUNNING"; payload: { running: boolean } }
+  | {
+      type: "SET_INPUT";
+      payload: {
+        chainId: string;
+        promptId: string;
+        index: number;
+        input: string;
+      };
+    }
+  | {
+      type: "SET_RESPONSE";
+      payload: { chainId: string; promptId: string; response: string };
+    };
 
 interface ContextProps {
   state: ContextState;
@@ -48,10 +87,13 @@ const initialState: ContextState = {
           prompt: "Tell me some fun facts about\n\n{{topic}}",
           id: "1",
           userInput: false,
+          inputs: {},
+          response: "",
         },
       ],
     },
   ],
+  running: false,
 };
 
 // reducer function
@@ -66,6 +108,7 @@ const reducer = (state: ContextState, action: Action): ContextState => {
       }));
       return {
         editMode: true,
+        running: false,
         chainList: [
           ...oldChainList,
           {
@@ -77,6 +120,8 @@ const reducer = (state: ContextState, action: Action): ContextState => {
                 prompt: "Tell me some fun facts about\n\n{{topic}}",
                 id: Date.now().toString(),
                 userInput: false,
+                inputs: {},
+                response: "",
               },
             ],
           },
@@ -90,7 +135,11 @@ const reducer = (state: ContextState, action: Action): ContextState => {
             ...chain,
             prompts: chain.prompts.map((prompt) =>
               prompt.id === action.payload.prompt.id
-                ? action.payload.prompt
+                ? {
+                    ...action.payload.prompt,
+                    inputs: emptyInputs,
+                    response: "",
+                  }
                 : prompt
             ),
           };
@@ -113,6 +162,8 @@ const reducer = (state: ContextState, action: Action): ContextState => {
           "Add a new prompt here. Refer to previous context: \n{{prev_response}}",
         id: Date.now().toString(),
         userInput: action.payload.userInput,
+        inputs: emptyInputs,
+        response: "",
       };
       return {
         ...state,
@@ -160,11 +211,13 @@ const reducer = (state: ContextState, action: Action): ContextState => {
         ),
       };
     case "DELETE_CHAIN":
+      const filteredChainList = state.chainList.filter(
+        (chain) => chain.id !== action.payload.chainId
+      );
+      filteredChainList[0].active = true;
       return {
         ...state,
-        chainList: state.chainList.filter(
-          (chain) => chain.id !== action.payload.chainId
-        ),
+        chainList: filteredChainList,
       };
     case "CHANGE_NAME":
       return {
@@ -174,6 +227,33 @@ const reducer = (state: ContextState, action: Action): ContextState => {
             ? {
                 ...chain,
                 name: action.payload.name,
+              }
+            : chain
+        ),
+      };
+    case "RUNNING":
+      return {
+        ...state,
+        running: action.payload.running,
+      };
+    case "SET_INPUT":
+      return {
+        ...state,
+        chainList: state.chainList.map((chain) =>
+          chain.id === action.payload.chainId
+            ? {
+                ...chain,
+                prompts: chain.prompts.map((prompt) =>
+                  prompt.id === action.payload.promptId
+                    ? {
+                        ...prompt,
+                        inputs: {
+                          ...prompt.inputs,
+                          [action.payload.index]: action.payload.input,
+                        },
+                      }
+                    : prompt
+                ),
               }
             : chain
         ),
@@ -193,7 +273,6 @@ export const ChainProvider = ({ children }: { children: JSX.Element }) => {
     "promptContext",
     initialState
   );
-
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {

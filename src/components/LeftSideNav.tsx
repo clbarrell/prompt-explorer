@@ -1,4 +1,11 @@
-import { Box, Button, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  StackDivider,
+  Text,
+} from "@chakra-ui/react";
 import { useChainContext } from "@/lib/promptContext";
 
 const LeftSideNav = () => {
@@ -17,33 +24,43 @@ const LeftSideNav = () => {
 
   return (
     <Box w="20%" minW={"190px"} h="100vh" p={4}>
-      <Text fontSize="xl" fontWeight="bold" mb={4}>
+      <Text fontSize="xl" fontWeight="bold" mb={0}>
         Prompt Explorer
       </Text>
-      <Stack>
+      {/* <Box borderTopWidth={2} my={5} borderColor="gray.200" /> */}
+      {/* <Divider my={5} /> */}
+      <Button
+        onClick={handleNewChain}
+        w="100%"
+        mt={6}
+        mb={3}
+        variant="outline"
+        colorScheme={"green"}
+        justifyContent={"start"}
+      >
+        New Chain
+      </Button>
+      <Stack spacing={0}>
         {state.chainList.map((chain) => (
           <Button
             key={chain.id}
             variant="ghost"
-            colorScheme={chain.active ? "blue" : "gray"}
-            fontWeight={chain.active ? "bold" : "normal"}
-            rounded="none"
+            // colorScheme={chain.active ? "gray" : "gray"}
+            // fontWeight={chain.active ? "bold" : "normal"}
+            bg={chain.active ? "gray.100" : "white"}
+            rounded="md"
             onClick={() => handleChainClick(chain.id)}
             w="100%"
+            textAlign={"left"}
+            overflow="hidden"
+            whiteSpace={"nowrap"}
+            textOverflow="ellipsis"
+            display={"inline-block"}
           >
             {chain.name}
           </Button>
         ))}
       </Stack>
-      <Button
-        onClick={handleNewChain}
-        w="100%"
-        mt={8}
-        variant="solid"
-        colorScheme={"green"}
-      >
-        New Chain
-      </Button>
     </Box>
   );
 };

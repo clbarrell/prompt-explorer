@@ -1,3 +1,4 @@
+import { usePromptInput } from "@/hooks/usePromptInput";
 import {
   Box,
   Button,
@@ -25,6 +26,7 @@ export const PromptComponent = ({
   const { state, dispatch } = useChainContext();
   const onChange = (value: string) => onPromptUpdate(prompt.id, value);
   const emptyPrompt = prompt.prompt === "";
+  const { inputValue, setInputChange } = usePromptInput(prompt, chainId);
 
   const deletePrompt = () => {
     dispatch({
@@ -74,14 +76,22 @@ export const PromptComponent = ({
       return (
         <Input
           key={`${part.slice(0, 10)}-${i}`}
-          value="{{Previous response goes here}}"
+          value="{{Previous response here}}"
           readOnly={true}
           borderColor="gray.400"
           color="gray.600"
         />
       );
     } else if (part[0] === "{") {
-      return <Input key={part.slice(0, 10)} placeholder={part} />;
+      return (
+        <Input
+          key={`${part.slice(0, 10)}-${i}`}
+          placeholder={part}
+          value={inputValue(i)}
+          onChange={setInputChange(i)}
+          isInvalid={inputValue(i) === ""}
+        />
+      );
     } else {
       return (
         <Text key={part.slice(0, 10)} whiteSpace="pre-wrap">
