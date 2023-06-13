@@ -25,12 +25,14 @@ import { PromptComponent } from "./prompt";
 import { SelectButtonGroup } from "./SelectButtonGroup";
 import { ToggleButton } from "./ToggleButton";
 import { ConfirmDelete } from "./ConfirmDelete";
+import { useRunChains } from "@/hooks/useRunChains";
 
 const MainPanel = () => {
   const { state, dispatch } = useChainContext();
   const { chainList, editMode } = state;
   const activeChain = chainList.find((chain) => chain.active);
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const startChain = useRunChains(activeChain?.id || "");
 
   const handleExport = () => {
     // TODO: Implement export functionality
@@ -115,7 +117,7 @@ const MainPanel = () => {
           </Stack>
           <HStack direction="row">
             {!state.editMode && (
-              <Button colorScheme={"green"} size="sm">
+              <Button colorScheme={"green"} size="sm" onClick={startChain}>
                 Start
               </Button>
             )}

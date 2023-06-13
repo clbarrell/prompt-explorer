@@ -13,6 +13,7 @@ import { useState } from "react";
 import { HighlightWithinTextarea } from "react-highlight-within-textarea";
 // https://bonafideduck.github.io/react-highlight-within-textarea/
 import { Prompt, useChainContext } from "../lib/promptContext";
+import { PromptResponse } from "./PromptResponse";
 
 export const PromptComponent = ({
   prompt,
@@ -90,6 +91,7 @@ export const PromptComponent = ({
           value={inputValue(i)}
           onChange={setInputChange(i)}
           isInvalid={inputValue(i) === ""}
+          errorBorderColor="red.300"
         />
       );
     } else {
@@ -123,9 +125,7 @@ export const PromptComponent = ({
           borderLeftColor={"gray.300"}
           pl={{ sm: 0, md: 4 }}
         >
-          <Text fontSize="sm" color="gray.500" letterSpacing={"wide"}>
-            Press start to begin
-          </Text>
+          <PromptResponse promptId={prompt.id} chainId={chainId} />
         </GridItem>
       </Grid>
     </Box>

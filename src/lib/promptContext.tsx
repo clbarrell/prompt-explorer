@@ -20,6 +20,7 @@ type ContextState = {
   editMode: boolean;
   chainList: Chain[];
   running: boolean;
+  progress: number;
 };
 
 const emptyInputs = {
@@ -68,7 +69,9 @@ type Action =
   | {
       type: "SET_RESPONSE";
       payload: { chainId: string; promptId: string; response: string };
-    };
+    }
+  | { type: "PROGRESS"; payload: { progress: number } }
+  | { type: "CLEAR_RESPONSES"; payload: { chainId: string } };
 
 interface ContextProps {
   state: ContextState;
@@ -94,6 +97,7 @@ const initialState: ContextState = {
     },
   ],
   running: false,
+  progress: 0,
 };
 
 // reducer function
@@ -107,8 +111,8 @@ const reducer = (state: ContextState, action: Action): ContextState => {
         active: false,
       }));
       return {
+        ...state,
         editMode: true,
-        running: false,
         chainList: [
           ...oldChainList,
           {
@@ -251,6 +255,41 @@ const reducer = (state: ContextState, action: Action): ContextState => {
                           ...prompt.inputs,
                           [action.payload.index]: action.payload.input,
                         },
+                      }
+                    : prompt
+                ),
+              }
+            : chain
+        ),
+      };
+    case "PROGRESS":
+      return {
+        ...state,
+        progress: action.payload.progress,
+      };
+    case "CLEAR_RESPONSES":
+      return {
+        ...state,
+        chainList: state.chainList.map((chain) => ({
+          ...chain,
+          prompts: chain.prompts.map((prompt) => ({
+            ...prompt,
+            response: "",
+          })),
+        })),
+      };
+    case "SET_RESPONSE":
+      return {
+        ...state,
+        chainList: state.chainList.map((chain) =>
+          chain.id === action.payload.chainId
+            ? {
+                ...chain,
+                prompts: chain.prompts.map((prompt) =>
+                  prompt.id === action.payload.promptId
+                    ? {
+                        ...prompt,
+                        response: action.payload.response,
                       }
                     : prompt
                 ),

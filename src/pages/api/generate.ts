@@ -9,13 +9,6 @@ const openai = new OpenAIApi(configuration);
 
 // TODO: MAKE GENERIC CALLS for gpt3, gpt3.5 (chat one) and whisper transcription!
 
-type Data = {
-  feedback: string;
-};
-
-const supabaseUrl = "https://fybqacezgsihoisssvas.supabase.co";
-const supabase = createClient(supabaseUrl, process.env.SUPABASE_KEY);
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -30,37 +23,35 @@ export default async function handler(
     return;
   }
 
-  const feedback = req.body.feedback || "";
-  const user = req.body.user || "";
-  if (feedback.trim().length === 0) {
+  const prompt = req.body.prompt || "";
+  if (prompt.trim().length === 0) {
     res.status(400).json({
       error: {
-        message: "Please enter a valid feedback",
+        message: "Please enter a valid prompt",
       },
     });
     return;
   }
   console.log("Running");
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: generatePrompt(feedback),
-      temperature: 0.62,
-      max_tokens: 1000,
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          content: "You are a friendly, intelligent AI assistant.",
+          role: "system",
+        },
+        {
+          content: prompt,
+          role: "user",
+        },
+      ],
     });
     // SUCCESS
-    console.log("Response", completion.data.choices[0].text);
-    // Temporary: To get a sense of what kinds of things people are submitting
-    // no visitor tracking yet
-    const { data, error } = await supabase.from("feedback_submitted").insert([
-      {
-        feedback: feedback,
-        response: JSON.parse(completion.data.choices[0].text as string),
-        user: user,
-      },
-    ]);
-
-    res.status(200).json({ result: completion.data.choices[0].text });
+    console.log("Response", completion.data.choices[0].message?.content);
+    res
+      .status(200)
+      .json({ result: completion.data.choices[0].message?.content });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
@@ -75,28 +66,4 @@ export default async function handler(
       });
     }
   }
-}
-
-// PROMPT TTIP: https://github.com/cfortuner/promptable/blob/main/packages/promptable/src/prompts/prompts.ts#L114-L146
-
-function generatePrompt(feedback: string) {
-  return `Good customer feedback identifies a problem that the customer faces in their day to day use of the product, what type of user the feedback is from such as role or motivation, says why it impacts their work and hints at a broader theme. It might be an opportunity to do something better.
-
-  Good customer feedback examples:
-  - Lead developers want better insight into their build usage, to plan for overages
-  - Developer experience teams want to setup templates in Buildkite so their own product teams can build faster
-  - Customers who use their mobile phones for banking find paying bills tedious and the process of entering the details for each bill cumbersome, error prone and time consuming.
-  
-  'Needs improvement' customer feedback doesn't identify a problem the customer faces and mentions a solution that a customer requests. It might not clearly state which customer it is about.
-  
-  Needs improvement customer feeback examples:
-  - Customer wants a button to do a CSV export on the dashboard page
-  - Leader doesn't like how we display build logs, finds it difficult to use
-  - Customers want to be able to pay bills using their smartphone camera
-  
-  Classify the following feedback as good or needs improvement and describe how the feedback could be improved. If more information is requried, suggest a question that could be asked to the customer.
-  
-  Your response should be in JSON format with four parameters 'category' ('good' or 'needs improvement'), 'included' (good aspects included in the given feedback), 'missing' (aspects missing from the given feedback: and 'description' (your assessment about the feedback).
-  
-  ${feedback}:`;
 }
