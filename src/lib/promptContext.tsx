@@ -49,7 +49,7 @@ type Action =
         chainId: string;
       };
     }
-  | { type: "IMPORT"; payload: { chainList: Chain[] } }
+  | { type: "IMPORT"; payload: { chain: Chain } }
   | { type: "ADD_PROMPT"; payload: { chainId: string; userInput: boolean } }
   | { type: "CHANGE_ACTIVE"; payload: { chainId: string } }
   | { type: "LOAD_CHAINS"; payload: { chainList: Chain[] } }
@@ -156,9 +156,17 @@ const reducer = (state: ContextState, action: Action): ContextState => {
         chainList: newChainList,
       };
     case "IMPORT":
+      const mergedChain = {
+        ...initialState.chainList[0],
+        ...action.payload.chain,
+        id: Date.now().toString(),
+      };
+      const mergedList = [...state.chainList, mergedChain];
+      mergedList.forEach((c) => (c.active = false));
+      mergedList[mergedList.length - 1].active = true;
       return {
         ...state,
-        chainList: [...state.chainList, ...action.payload.chainList],
+        chainList: mergedList,
       };
     case "ADD_PROMPT":
       const newPrompt = {
@@ -326,7 +334,9 @@ export const ChainProvider = ({ children }: { children: JSX.Element }) => {
 
   // save to local storage
   useEffect(() => {
-    setPpromptContextState(state);
+    if (JSON.stringify(state) != JSON.stringify(initialState)) {
+      setPpromptContextState(state);
+    }
   }, [setPpromptContextState, state]);
 
   return (

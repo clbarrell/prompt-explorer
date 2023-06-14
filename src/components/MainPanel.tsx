@@ -26,6 +26,7 @@ import { SelectButtonGroup } from "./SelectButtonGroup";
 import { ToggleButton } from "./ToggleButton";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { useRunChains } from "@/hooks/useRunChains";
+import { ExportModal } from "./export";
 
 const MainPanel = () => {
   const { state, dispatch } = useChainContext();
@@ -34,8 +35,13 @@ const MainPanel = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const startChain = useRunChains(activeChain?.id || "");
 
+  const {
+    isOpen: exportOpen,
+    onClose: onExportClose,
+    onOpen: onExportOpen,
+  } = useDisclosure();
   const handleExport = () => {
-    // TODO: Implement export functionality
+    onExportOpen();
   };
 
   const handlePromptUpdate = (promptId: string, newPrompt: string) => {
@@ -153,6 +159,11 @@ const MainPanel = () => {
         confirmDeleteCallBack={handleDelete}
         isOpen={isOpen}
         onClose={onClose}
+      />
+      <ExportModal
+        chain={activeChain}
+        isOpen={exportOpen}
+        onClose={onExportClose}
       />
     </Container>
   );

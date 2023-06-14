@@ -5,11 +5,18 @@ import {
   Stack,
   StackDivider,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useChainContext } from "@/lib/promptContext";
+import { ImportModal } from "./ImportModal";
 
 const LeftSideNav = () => {
   const { state, dispatch } = useChainContext();
+  const { onOpen, isOpen, onClose } = useDisclosure();
+
+  const handleImport = () => {
+    onOpen();
+  };
 
   const handleNewChain = () => {
     dispatch({
@@ -27,18 +34,26 @@ const LeftSideNav = () => {
       <Text fontSize="xl" fontWeight="bold" mb={0}>
         Prompt Explorer
       </Text>
-      {/* <Box borderTopWidth={2} my={5} borderColor="gray.200" /> */}
-      {/* <Divider my={5} /> */}
       <Button
         onClick={handleNewChain}
         w="100%"
         mt={6}
-        mb={3}
         variant="outline"
         colorScheme={"green"}
         justifyContent={"start"}
       >
         New Chain
+      </Button>
+      <Button
+        onClick={handleImport}
+        w="100%"
+        mt={2}
+        mb={3}
+        variant="outline"
+        colorScheme={"green"}
+        justifyContent={"start"}
+      >
+        Import
       </Button>
       <Stack spacing={0}>
         {state.chainList.map((chain) => (
@@ -61,6 +76,7 @@ const LeftSideNav = () => {
           </Button>
         ))}
       </Stack>
+      <ImportModal isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 };
