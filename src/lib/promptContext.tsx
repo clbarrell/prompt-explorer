@@ -105,9 +105,9 @@ const initialState: ContextState = {
       ],
     },
     {
-      name: "LinkedIn post",
+      name: "Fun Facts",
       id: "121jtio23",
-      active: true,
+      active: false,
       prompts: [
         {
           prompt: "Tell me some fun facts about\n\n{{topic}}",
