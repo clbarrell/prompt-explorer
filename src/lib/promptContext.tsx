@@ -83,7 +83,7 @@ const initialState: ContextState = {
   chainList: [
     {
       name: "LinkedIn post",
-      id: "1",
+      id: "fsda32",
       active: true,
       prompts: [
         {
@@ -106,7 +106,7 @@ const initialState: ContextState = {
     },
     {
       name: "LinkedIn post",
-      id: "1",
+      id: "121jtio23",
       active: true,
       prompts: [
         {
