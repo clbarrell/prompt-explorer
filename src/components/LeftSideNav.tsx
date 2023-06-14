@@ -40,8 +40,11 @@ const LeftSideNav = () => {
 
   return (
     <Box w="20%" minW={"190px"} h="100vh" p={4}>
-      <Text fontSize="xl" fontWeight="bold" mb={0}>
-        Prompt Explorer
+      <Text fontSize="2xl" letterSpacing={"wider"} fontWeight="bold" mb={0}>
+        ProtoPrompts
+      </Text>
+      <Text fontSize={"sm"} color="gray.600">
+        Prototype your prompts
       </Text>
       <Button
         onClick={handleNewChain}
