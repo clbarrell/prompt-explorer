@@ -123,6 +123,24 @@ const MainPanel = () => {
           width="100%"
           mb={4}
         >
+          <HStack direction="row">
+            <ButtonGroup isAttached variant="outline" size="sm">
+              <ToggleButton label="edit" editMode={state.editMode} />
+              <ToggleButton label="run" editMode={state.editMode} />
+            </ButtonGroup>
+            {!state.editMode && (
+              <Button
+                colorScheme={"green"}
+                size="sm"
+                onClick={startChain}
+                isLoading={state.running}
+                loadingText="Running"
+                leftIcon={<FiPlayCircle />}
+              >
+                Start
+              </Button>
+            )}
+          </HStack>
           <Stack direction="row">
             <IconButton
               aria-label={"Download"}
@@ -139,24 +157,6 @@ const MainPanel = () => {
               variant={"ghost"}
             />
           </Stack>
-          <HStack direction="row">
-            {!state.editMode && (
-              <Button
-                colorScheme={"green"}
-                size="sm"
-                onClick={startChain}
-                isLoading={state.running}
-                loadingText="Running"
-                leftIcon={<FiPlayCircle />}
-              >
-                Start
-              </Button>
-            )}
-            <ButtonGroup isAttached variant="outline" size="sm">
-              <ToggleButton label="edit" editMode={state.editMode} />
-              <ToggleButton label="run" editMode={state.editMode} />
-            </ButtonGroup>
-          </HStack>
         </Flex>
         <Stack
           alignItems="center"
