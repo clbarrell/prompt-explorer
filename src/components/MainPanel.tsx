@@ -12,6 +12,7 @@ import {
   FormLabel,
   Heading,
   HStack,
+  IconButton,
   Skeleton,
   Stack,
   Switch,
@@ -27,6 +28,15 @@ import { ToggleButton } from "./ToggleButton";
 import { ConfirmDelete } from "./ConfirmDelete";
 import { useRunChains } from "@/hooks/useRunChains";
 import { ExportModal } from "./export";
+import {
+  FiDelete,
+  FiDownload,
+  FiPlay,
+  FiPlayCircle,
+  FiPlus,
+  FiTrash,
+  FiTrash2,
+} from "react-icons/fi";
 
 const MainPanel = () => {
   const { state, dispatch } = useChainContext();
@@ -114,16 +124,31 @@ const MainPanel = () => {
           mb={4}
         >
           <Stack direction="row">
-            <Button onClick={handleExport} variant="link" size="sm">
-              Export
-            </Button>
-            <Button onClick={onOpen} variant="link" size="sm">
-              Delete
-            </Button>
+            <IconButton
+              aria-label={"Download"}
+              onClick={handleExport}
+              icon={<FiDownload />}
+              title="Download"
+              variant={"ghost"}
+            />
+            <IconButton
+              aria-label={"Delete"}
+              icon={<FiTrash />}
+              title="delete"
+              onClick={onOpen}
+              variant={"ghost"}
+            />
           </Stack>
           <HStack direction="row">
             {!state.editMode && (
-              <Button colorScheme={"green"} size="sm" onClick={startChain}>
+              <Button
+                colorScheme={"green"}
+                size="sm"
+                onClick={startChain}
+                isLoading={state.running}
+                loadingText="Running"
+                leftIcon={<FiPlayCircle />}
+              >
                 Start
               </Button>
             )}
@@ -148,7 +173,7 @@ const MainPanel = () => {
             />
           ))}
           {state.editMode && (
-            <Button onClick={handleAddPrompt} mt={4}>
+            <Button onClick={handleAddPrompt} mt={4} leftIcon={<FiPlus />}>
               Add new prompt
             </Button>
           )}

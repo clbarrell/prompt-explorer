@@ -1,5 +1,6 @@
 import { useChainContext } from "@/lib/promptContext";
 import { Button } from "@chakra-ui/react";
+import { FiPlay, FiPlayCircle } from "react-icons/fi";
 
 export const ToggleButton = ({
   label,
@@ -19,7 +20,12 @@ export const ToggleButton = ({
   };
 
   return (
-    <Button onClick={handleClick} bg={active ? "gray.200" : "inherit"} borderWidth={2}>
+    <Button
+      onClick={handleClick}
+      bg={active ? "gray.200" : "inherit"}
+      borderWidth={2}
+      leftIcon={label === "run" ? <FiPlayCircle /> : undefined}
+    >
       {label} mode
     </Button>
   );

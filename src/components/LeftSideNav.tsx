@@ -9,6 +9,15 @@ import {
 } from "@chakra-ui/react";
 import { useChainContext } from "@/lib/promptContext";
 import { ImportModal } from "./ImportModal";
+import {
+  FiDownload,
+  FiFile,
+  FiFilePlus,
+  FiFolder,
+  FiFolderPlus,
+  FiPlus,
+  FiUpload,
+} from "react-icons/fi";
 
 const LeftSideNav = () => {
   const { state, dispatch } = useChainContext();
@@ -41,6 +50,7 @@ const LeftSideNav = () => {
         variant="outline"
         colorScheme={"green"}
         justifyContent={"start"}
+        leftIcon={<FiFilePlus />}
       >
         New Chain
       </Button>
@@ -52,6 +62,7 @@ const LeftSideNav = () => {
         variant="outline"
         colorScheme={"green"}
         justifyContent={"start"}
+        leftIcon={<FiUpload />}
       >
         Import
       </Button>
@@ -71,6 +82,7 @@ const LeftSideNav = () => {
             whiteSpace={"nowrap"}
             textOverflow="ellipsis"
             display={"inline-block"}
+            leftIcon={<FiFile />}
           >
             {chain.name}
           </Button>

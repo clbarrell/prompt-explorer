@@ -17,6 +17,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { use, useEffect, useRef, useState } from "react";
+import { FiDownload, FiUpload } from "react-icons/fi";
 
 export function ImportModal({
   isOpen,
@@ -90,7 +91,12 @@ export function ImportModal({
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="green" mr={3} onClick={handleImport}>
+          <Button
+            colorScheme="green"
+            mr={3}
+            onClick={handleImport}
+            leftIcon={<FiUpload />}
+          >
             Import
           </Button>
           <Button variant="ghost">Cancel</Button>

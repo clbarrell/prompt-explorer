@@ -82,15 +82,38 @@ const initialState: ContextState = {
   editMode: true,
   chainList: [
     {
-      name: "Chain 1",
+      name: "LinkedIn post",
+      id: "1",
+      active: true,
+      prompts: [
+        {
+          prompt:
+            "Create an outline of a blog post about {{topic}} using sections and headings.",
+          id: "1",
+          userInput: false,
+          inputs: emptyInputs,
+          response: "",
+        },
+        {
+          prompt:
+            "Using this outline, turn it into written prose that would go viral on a LinkedIn post.\nRefer to previous context: \n{{prev_response}}",
+          id: "112345",
+          userInput: false,
+          inputs: emptyInputs,
+          response: "",
+        },
+      ],
+    },
+    {
+      name: "LinkedIn post",
       id: "1",
       active: true,
       prompts: [
         {
           prompt: "Tell me some fun facts about\n\n{{topic}}",
-          id: "1",
+          id: "12",
           userInput: false,
-          inputs: {},
+          inputs: emptyInputs,
           response: "",
         },
       ],

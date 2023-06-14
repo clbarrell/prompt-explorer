@@ -1,4 +1,5 @@
 import { useChainContext } from "@/lib/promptContext";
+import { useToast } from "@chakra-ui/react";
 import { useState } from "react";
 
 function replaceTopics(originalString: string, topicsArray: string[]) {
@@ -19,6 +20,7 @@ export const useRunChains = (chainId: string) => {
   // need to keep track of running state, progress and results
   // need to keep track of the current chain and prompt
   const { state: chainState, dispatch: chainDispatch } = useChainContext();
+  const toast = useToast();
 
   const startChain = async () => {
     chainDispatch({ type: "RUNNING", payload: { running: true } });
@@ -30,20 +32,31 @@ export const useRunChains = (chainId: string) => {
       return;
     }
     const promptCount = prompts.length;
+    let ok = true;
 
     // validate that the number of inputs not "" equal the matches
     prompts.forEach((prompt) => {
       const inputs = Object.values(prompt.inputs).filter(
         (input) => input !== ""
       );
-      const matches = prompt.prompt
-        .split(/({{.*?}})/g)
-        .filter((x) => x != "{{prev_response}}");
-      if (inputs.length !== matches.length) {
-        console.log("ERROR! number of inputs does not match number of matches");
-        return;
+      let matches = prompt.prompt
+        .match(/({{.*?}})/g)
+        ?.filter((x) => x != "{{prev_response}}");
+      if (matches && inputs.length !== matches.length && ok) {
+        toast({
+          title: "Error: missing {{variables}}",
+          description: `You need to fill in all the inputs of this chain, ${matches.join(
+            ", "
+          )}`,
+          status: "error",
+          isClosable: true,
+        });
+        // stop the whole chain running and return startChain function
+        chainDispatch({ type: "RUNNING", payload: { running: false } });
+        ok = false;
       }
     });
+    if (!ok) return;
 
     // run each prompt in turn
     let current = 0;
@@ -92,5 +105,6 @@ export const useRunChains = (chainId: string) => {
     }
     chainDispatch({ type: "RUNNING", payload: { running: false } });
   };
+
   return startChain;
 };

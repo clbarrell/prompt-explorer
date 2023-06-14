@@ -8,9 +8,11 @@ import {
   Flex,
   GridItem,
   Grid,
+  IconButton,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { HighlightWithinTextarea } from "react-highlight-within-textarea";
+import { FiTrash } from "react-icons/fi";
 // https://bonafideduck.github.io/react-highlight-within-textarea/
 import { Prompt, useChainContext } from "../lib/promptContext";
 import { PromptResponse } from "./PromptResponse";
@@ -47,7 +49,7 @@ export const PromptComponent = ({
             highlight={/({{.*?}})/g}
             onChange={onChange}
           />
-          <Button
+          {/* <Button
             size="xs"
             pos={"absolute"}
             right={1}
@@ -55,7 +57,18 @@ export const PromptComponent = ({
             onClick={deletePrompt}
           >
             delete
-          </Button>
+          </Button> */}
+          <IconButton
+            icon={<FiTrash />}
+            pos={"absolute"}
+            variant="ghost"
+            size="sm"
+            right={1}
+            top={1}
+            aria-label={"Delete prompt"}
+            onClick={deletePrompt}
+            colorScheme="red"
+          />
         </Box>
         {noVariables && (
           <Text fontSize={"sm"} color="gray.500">

@@ -32,7 +32,7 @@ export default async function handler(
     });
     return;
   }
-  console.log("Running");
+  // console.log("Running");
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -48,7 +48,7 @@ export default async function handler(
       ],
     });
     // SUCCESS
-    console.log("Response", completion.data.choices[0].message?.content);
+    // console.log("Response", completion.data.choices[0].message?.content);
     res
       .status(200)
       .json({ result: completion.data.choices[0].message?.content });

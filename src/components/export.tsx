@@ -16,6 +16,7 @@ import {
   useClipboard,
   useToast,
 } from "@chakra-ui/react";
+import { FiCopy } from "react-icons/fi";
 
 export function ExportModal({
   chain,
@@ -60,7 +61,12 @@ export function ExportModal({
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="green" mr={3} onClick={handleCopy}>
+          <Button
+            colorScheme="green"
+            mr={3}
+            onClick={handleCopy}
+            leftIcon={<FiCopy />}
+          >
             Copy
           </Button>
           <Button variant="ghost" onClick={onClose}>
