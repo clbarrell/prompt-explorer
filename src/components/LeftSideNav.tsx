@@ -70,6 +70,18 @@ const LeftSideNav = () => {
         Import
       </Button>
       <Stack spacing={0}>
+        <Box pt={2}>
+          <Text
+            textTransform={"uppercase"}
+            fontSize="xs"
+            fontWeight={"medium"}
+            ml={0}
+            mb={2}
+            color="gray.500"
+          >
+            Prompt chains
+          </Text>
+        </Box>
         {state.chainList.map((chain) => (
           <Button
             key={chain.id}
