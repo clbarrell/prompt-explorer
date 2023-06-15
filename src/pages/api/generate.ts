@@ -7,12 +7,11 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-// TODO: MAKE GENERIC CALLS for gpt3, gpt3.5 (chat one) and whisper transcription!
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const timeStart = new Date();
   if (!configuration.apiKey) {
     res.status(500).json({
       error: {
@@ -52,6 +51,10 @@ export default async function handler(
     res
       .status(200)
       .json({ result: completion.data.choices[0].message?.content });
+    console.log(
+      "Completed: seconds",
+      (new Date().getTime() - timeStart.getTime()) / 1000
+    );
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
