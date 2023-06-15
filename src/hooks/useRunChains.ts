@@ -61,7 +61,7 @@ export const useRunChains = (chainId: string) => {
     // run each prompt in turn
     let current = 0;
     let resultsList: string[] = [];
-    while (current < promptCount) {
+    while (current < promptCount && ok) {
       // run the prompt
       const prompt = prompts[current];
       const inputs = Object.values(prompt.inputs).filter(
@@ -86,8 +86,17 @@ export const useRunChains = (chainId: string) => {
         },
         body: JSON.stringify({ prompt: formattedPrompt }),
       });
+      console.log(results);
 
       const jsonResult = await results.json();
+      if (jsonResult.error) {
+        toast({
+          title: "Error: " + jsonResult.error.message,
+          status: "error",
+          isClosable: true,
+        });
+        ok = false;
+      }
 
       // console.log("Result from\n\t", formattedPrompt, "\nis\n\t", jsonResult.result);
       resultsList.push(jsonResult.result);
