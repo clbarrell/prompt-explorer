@@ -105,6 +105,7 @@ export const PromptComponent = ({
           onChange={setInputChange(i)}
           isInvalid={inputValue(i) === ""}
           errorBorderColor="red.300"
+          isDisabled={state.running}
         />
       );
     } else {

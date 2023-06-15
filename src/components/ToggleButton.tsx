@@ -9,12 +9,12 @@ export const ToggleButton = ({
   label: string;
   editMode: boolean;
 }) => {
-  const { dispatch } = useChainContext();
+  const { state, dispatch } = useChainContext();
   const active =
     (label === "edit" && editMode) || (label === "run" && !editMode);
 
   const handleClick = () => {
-    if (!active) {
+    if (!active && state.running === false) {
       dispatch({ type: "SWITCH_MODE" });
     }
   };
@@ -25,6 +25,7 @@ export const ToggleButton = ({
       bg={active ? "gray.200" : "inherit"}
       borderWidth={2}
       leftIcon={label === "run" ? <FiPlayCircle /> : undefined}
+      isDisabled={state.running}
     >
       {label} mode
     </Button>

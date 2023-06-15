@@ -54,6 +54,7 @@ const LeftSideNav = () => {
         colorScheme={"green"}
         justifyContent={"start"}
         leftIcon={<FiFilePlus />}
+        isDisabled={state.running}
       >
         New Chain
       </Button>
@@ -66,6 +67,7 @@ const LeftSideNav = () => {
         colorScheme={"green"}
         justifyContent={"start"}
         leftIcon={<FiUpload />}
+        isDisabled={state.running}
       >
         Import
       </Button>
@@ -98,6 +100,7 @@ const LeftSideNav = () => {
             textOverflow="ellipsis"
             display={"inline-block"}
             leftIcon={<FiFile />}
+            isDisabled={state.running}
           >
             {chain.name}
           </Button>

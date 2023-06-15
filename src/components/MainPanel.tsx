@@ -164,6 +164,18 @@ const MainPanel = () => {
           spacing={4}
           width="100%"
         >
+          <Box width={"full"}>
+            {state.editMode ? (
+              <Text color="gray.600">
+                Edit your prompts below then use {"'Run mode'"}
+              </Text>
+            ) : (
+              <Text color="gray.600">
+                Fill out the input boxes below and press the start button to run
+                your prompts
+              </Text>
+            )}
+          </Box>
           {activeChain?.prompts.map((prompt) => (
             <PromptComponent
               key={prompt.id}
