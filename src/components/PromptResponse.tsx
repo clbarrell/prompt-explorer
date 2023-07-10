@@ -41,7 +41,7 @@ export const PromptResponse = ({
       skeletonHeight="2"
     >
       <Text fontSize={"sm"} color="gray.500">Response</Text>
-      <Text whiteSpace={"pre-line"}>{prompt.response}</Text>
+      <Text whiteSpace={"pre-wrap"}>{prompt.response}</Text>
     </SkeletonText>
   );
 };
