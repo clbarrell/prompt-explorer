@@ -95,6 +95,7 @@ const MainPanel = () => {
         alignItems="center"
         justifyContent="center"
         width="100%"
+        pos={"relative"}
       >
         <Box mt={3} mb={6}>
           <Editable
@@ -122,6 +123,9 @@ const MainPanel = () => {
           justifyContent="space-between"
           width="100%"
           mb={4}
+          position={"sticky"}
+          top={0}
+          zIndex={1}
         >
           <HStack direction="row">
             <ButtonGroup isAttached variant="outline" size="sm">
