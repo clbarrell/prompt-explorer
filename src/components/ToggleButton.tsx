@@ -22,7 +22,7 @@ export const ToggleButton = ({
   return (
     <Button
       onClick={handleClick}
-      bg={active ? "gray.200" : "inherit"}
+      bg={active ? "gray.200" : "white"}
       borderWidth={2}
       leftIcon={label === "run" ? <FiPlayCircle /> : undefined}
       isDisabled={state.running}
